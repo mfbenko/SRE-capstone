@@ -1,0 +1,55 @@
+# Edited by Alec Ippolito
+
+# Ignore Python bytecode files
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+
+# Ignore virtual environment directories
+venv/
+env/
+
+# Ignore Docker files and directories
+*.log
+docker-compose.override.yml
+.docker/
+
+# Ignore Kafka related data and logs
+kafka-logs/
+
+# Ignore MongoDB data and logs
+mongo_data/
+*.mongodb/
+
+# Ignore MySQL data and logs
+mysql_data/
+*.sql
+
+# Ignore development and environment configuration files
+.env
+*.env
+
+# Ignore IDE and editor configuration files
+.vscode/
+.idea/
+*.sublime-project
+*.sublime-workspace
+
+# Ignore OS-specific files
+.DS_Store
+Thumbs.db
+
+# Ignore build and compiled files
+build/
+dist/
+*.egg-info
+
+# Ignore test results and coverage reports
+*.cover
+*.coverage
+coverage-report/
+
+# Ignore temporary files
+*.tmp
+*.swp
