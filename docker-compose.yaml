@@ -3,56 +3,39 @@
 # Rescouces: 
 # https://hub.docker.com/r/docker/compose
 # https://hub.docker.com/_/mongo
-# https://www.baeldung.com/ops/kafka-docker-setup
+# https://hub.docker.com/r/apache/kafka
 
 services:
-  # Zookeeper service configuration
-  zookeeper:
-    image: confluentinc/cp-zookeeper:7.4.4
-    container_name: sre-capstone-zookeeper   
-    environment:
-      ZOOKEEPER_CLIENT_PORT: 2181
-      ZOOKEEPER_TICK_TIME: 2000
-    ports:
-      - 22181:2181
-    restart: always
-
-  # Kafka service configuration
-  kafka:
-    image: confluentinc/cp-kafka:7.4.4
+  # Apache Kafka service configuration
+  broker:
+    image: apache/kafka:latest
     container_name: sre-capstone-kafka 
-    depends_on:
-      - zookeeper
-    ports:
-      - 29092:29092
     environment:
-      KAFKA_BROKER_ID: 1
-      KAFKA_ZOOKEEPER_CONNECT: zookeeper:2181
-      KAFKA_ADVERTISED_LISTENERS: PLAINTEXT://kafka:9092,PLAINTEXT_HOST://localhost:29092
-      KAFKA_LISTENER_SECURITY_PROTOCOL_MAP: PLAINTEXT:PLAINTEXT,PLAINTEXT_HOST:PLAINTEXT
-      KAFKA_INTER_BROKER_LISTENER_NAME: PLAINTEXT
+      KAFKA_NODE_ID: 1
+      KAFKA_PROCESS_ROLES: broker,controller
+      KAFKA_LISTENERS: PLAINTEXT://localhost:9092,CONTROLLER://localhost:9093
+      KAFKA_ADVERTISED_LISTENERS: PLAINTEXT://localhost:9092
+      KAFKA_CONTROLLER_LISTENER_NAMES: CONTROLLER
+      KAFKA_LISTENER_SECURITY_PROTOCOL_MAP: CONTROLLER:PLAINTEXT,PLAINTEXT:PLAINTEXT
+      KAFKA_CONTROLLER_QUORUM_VOTERS: 1@localhost:9093
       KAFKA_OFFSETS_TOPIC_REPLICATION_FACTOR: 1
-    restart: always
+      KAFKA_TRANSACTION_STATE_LOG_REPLICATION_FACTOR: 1
+      KAFKA_TRANSACTION_STATE_LOG_MIN_ISR: 1
+      KAFKA_GROUP_INITIAL_REBALANCE_DELAY_MS: 0
+      KAFKA_NUM_PARTITIONS: 3
 
-  # MongoDB service configuration
+  # Apache Kafka service configuration
   mongodb:
-    image: mongo:5.0
-    container_name: sre-capstone-mongodb  
+    image: mongo:latest  
+    container_name: sre-capstone-mongodb
+    restart: always 
     ports:
-      - "27017:27017"
+      - "27017:27017" 
     volumes:
-      - mongodb_data:/data/db
+      - mongodb_data:/data/db 
     environment:
-      MONGO_INITDB_ROOT_USERNAME: root
-      MONGO_INITDB_ROOT_PASSWORD: example
-      MONGO_INITDB_DATABASE: mydb
-    networks:
-      - my_network
-    restart: always
+      - MONGO_INITDB_ROOT_USERNAME=rootuser  
+      - MONGO_INITDB_ROOT_PASSWORD=rootpassword 
 
 volumes:
-  mongodb_data:
-
-networks:
-  my_network:
-    driver: bridge
+  mongodb_data:  
