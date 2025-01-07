@@ -23,6 +23,7 @@ collection = db[COLLECTION_NAME]
 consumer = KafkaConsumer(
 	#this is the kafaka topic to pull from
     'my_topic',
+	api_version=(0,11,5),
 	#Address of the Kafka broker
     bootstrap_servers=['localhost:9092'],
 	#first message in will be first message read
