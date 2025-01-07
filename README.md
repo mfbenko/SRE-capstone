@@ -16,7 +16,7 @@ Clone this repository which includes the necessary `docker-compose.yml` file:
 
 ```bash
 git clone git@github.com:mfbenko/SRE-capstone.git
-cd git@github.com:mfbenko/SRE-capstone.git
+cd SRE-capstone
 ```
 
 ### 2. Start Kafka and MongoDB Using Docker Compose
