@@ -42,4 +42,5 @@ for WebAttack in consumer:
     #begin pymongo insertion into MongoDB
 	data = WebAttack.value
 	#Insert data into MongoDB
+	print(data)
 	collection.insert_one(data)

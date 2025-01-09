@@ -39,12 +39,8 @@ for item in rows:
 	#sleep inorder to simulate real world randomness
 	print("2")
 	time.sleep(random_int)	
-	#Convert an item in the list of dictionaries to JSON
-	print("3")
-	json_string = json.dumps(item, indent=4)
 	#send the json item to the producer
-	print("4")
-	print(json_string)
-	producer.send(topic, value=json_string)
+	print("3")
+	producer.send(topic, value=item)
 #The messages have been sent...free up space
 producer.close()
