@@ -1,12 +1,10 @@
-# # Edited by Alec Ippolito
+#Edited by Alec Ippolito and Max Benko
 
-# FROM python:3.9-slim
+#The next step will be to containerize the producer and consumer. I beleive this will be done here. A bootstrap has been started below.
 
-# WORKDIR /app
-
-# COPY . /app
-
-# RUN pip install --upgrade pip && \
-#     pip install kafka-python-ng
-
-# EXPOSE 9092
+#FROM python:3.9-slim
+#WORKDIR /app
+#COPY . /app
+#RUN pip install --upgrade pip && \
+#pip install kafka-python-ng
+#EXPOSE 9092
