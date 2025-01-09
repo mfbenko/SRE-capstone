@@ -1,12 +1,12 @@
-# Edited by Alec Ippolito
+# # Edited by Alec Ippolito
 
-FROM python:3.9-slim
+# FROM python:3.9-slim
 
-WORKDIR /app
+# WORKDIR /app
 
-COPY . /app
+# COPY . /app
 
-RUN pip install --upgrade pip && \
-    pip install kafka-python-ng
+# RUN pip install --upgrade pip && \
+#     pip install kafka-python-ng
 
-EXPOSE 9092
+# EXPOSE 9092
