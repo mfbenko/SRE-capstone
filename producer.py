@@ -27,7 +27,7 @@ class KafkaProducerService:
 			bootstrap_servers=['localhost:9092'],
 			value_serializer=json_serializer,
 			)
-
+		return self.producer
 	# Send Messages
 	def send_message(self):
 		for index, item in enumerate(self.rows):
