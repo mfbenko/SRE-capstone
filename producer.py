@@ -31,7 +31,7 @@ class KafkaProducerService:
 	# Send Messages
 	def send_message(self):
 		for index, item in enumerate(self.rows):
-			time.sleep(random.randint(1, 10)) 
+			#time.sleep(random.randint(1, 10)) 
 			print(f"Sending Message {index}:\nProducer:\t{self.producer}\nTopic:\t\t{self.topic}\nContent:\t{item}\n")
 			self.producer.send(self.topic, value=item) 
 			self.producer.flush() # Ensure the message is sent immediatly
