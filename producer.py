@@ -5,17 +5,18 @@ import random
 import time
 from kafka import KafkaProducer
 
-# Serializes the input data to a JSON-formatted string and encodes it to UTF-8 bytes. Note: Called implicitly via producer.send()
-def json_serializer(data):
-    return json.dumps(data).encode('utf-8')
-
 class KafkaProducerService:
 	def __init__(self):
 		self.rows = ''
 		self.topic = 'my_topic'
-		self.producer = ''
+		self.producer = None
 
-	def create_producer(self,file='csic_database.csv'):
+	# Serializes the input data to a JSON-formatted string and encodes it to UTF-8 bytes. Note: Called implicitly via producer.send()
+	@staticmethod
+	def json_serializer(data):
+		return json.dumps(data).encode('utf-8')
+
+	def create_producer(self,file='test_database.csv'):
 		# Open database and read content
 		with open(file, 'r') as file:
 			csv_reader = csv.DictReader(file)
@@ -25,16 +26,17 @@ class KafkaProducerService:
 		self.producer = KafkaProducer(
 			api_version=(0,11,5),
 			bootstrap_servers=['localhost:9092'],
-			value_serializer=json_serializer,
+			value_serializer=self.json_serializer,
 			)
-		return self.producer
+
 	# Send Messages
 	def send_message(self):
 		for index, item in enumerate(self.rows):
-			#time.sleep(random.randint(1, 10)) 
+			time.sleep(random.randint(1, 10)) 
 			print(f"Sending Message {index}:\nProducer:\t{self.producer}\nTopic:\t\t{self.topic}\nContent:\t{item}\n")
-			self.producer.send(self.topic, value=item) 
-			self.producer.flush() # Ensure the message is sent immediatly
+			if item[''] == "Normal" or item[''] == "Anomalous":
+				self.producer.send(self.topic, value=item) 
+				self.producer.flush() # Ensure the message is sent immediatly
 
 		# Cleanup
 		print("Sending done...Cleanning up by closing producer!")
