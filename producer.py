@@ -16,7 +16,7 @@ class KafkaProducerService:
 	def json_serializer(data):
 		return json.dumps(data).encode('utf-8')
 
-	def create_producer(self,file='test_database.csv'):
+	def create_producer(self,file='csic_database.csv'):
 		# Open database and read content
 		with open(file, 'r') as file:
 			csv_reader = csv.DictReader(file)
@@ -32,15 +32,14 @@ class KafkaProducerService:
 	# Send Messages
 	def send_message(self):
 		for index, item in enumerate(self.rows):
-			time.sleep(random.randint(1, 10)) 
-			print(f"Sending Message {index}:\nProducer:\t{self.producer}\nTopic:\t\t{self.topic}\nContent:\t{item}\n")
+			#time.sleep(random.randint(1, 10)) 
 			if item[''] == "Normal" or item[''] == "Anomalous":
+				print(f"Sending Message {index}:\nProducer:\t{self.producer}\nTopic:\t\t{self.topic}\nContent:\t{item}\n")
 				self.producer.send(self.topic, value=item) 
 				self.producer.flush() # Ensure the message is sent immediatly
-
+			
 		# Cleanup
 		print("Sending done...Cleanning up by closing producer!")
-		self.producer.close()
 
 if __name__ == "__main__":
     producer_obj = KafkaProducerService()
