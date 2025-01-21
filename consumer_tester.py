@@ -45,7 +45,19 @@ class TestKafkaConsuner(unittest.TestCase):
 		
 	'''def test_insert_into_mongodb(self):
 		#do something
-	def test_run(self):
-		#do something'''
+		def test_run(self):
+		#do something
+		
+		
+	@patch('kafka.KafkaProducer.send')
+	def test_send_message(self, mock_send):
+		producer = KafkaProducerService()
+		producer.create_producer('test_database.csv')
+		producer.send_message()
+		self.assertEqual(mock_send.call_count, 4)
+		
+		
+		
+		'''
 if __name__ == '__main__':
 	unittest.main()

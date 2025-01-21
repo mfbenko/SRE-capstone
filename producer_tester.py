@@ -23,7 +23,7 @@ class TestKafkaProducer(unittest.TestCase):
 		producer.create_producer('test_database.csv')
 		self.assertIsNotNone(producer.producer)
 
-	#create a producer and test its send_message method completes calls to send() 7 times
+	#create a producer and test its send_message method completes calls to send() 4 times
 	@patch('kafka.KafkaProducer.send')
 	def test_send_message(self, mock_send):
 		producer = KafkaProducerService()
