@@ -25,7 +25,7 @@ MONGO_COLLECTION = 'consumer_records'
 CSV_FILE = 'csic_database.csv'
 
 # TODO:
-#LIMIT = 5
+LIMIT = None
 
 def run_producer():
     try:

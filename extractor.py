@@ -3,6 +3,7 @@ from pymongo import MongoClient
 import pandas
 import mysql.connector
 import time
+import os
 
 class MongoSummaryService:
 
@@ -49,8 +50,8 @@ class SQLConnectorService:
 		
 	def create_sql_table(self):
 		#create a database and table if it does not exist
-		self.cursor.execute("""CREATE DATABASE IF NOT EXISTS capstone_db""")
-		self.cursor.execute("""USE capstone_db""")
+		self.cursor.execute("""CREATE DATABASE IF NOT EXISTS capstone_db;""")
+		self.cursor.execute("""USE capstone_db;""")
 
 		self.cursor.execute("""
 		CREATE TABLE IF NOT EXISTS summary(
@@ -62,6 +63,9 @@ class SQLConnectorService:
 		""")
 
 	def insert_into_sql(self,summary_record):
+		#we want to overwrite not add new rows
+		self.cursor.execute("""DELETE FROM SUMMARY;""")
+	
 		#insert the summary record into MySQL
 		for _, row in summary_record.iterrows():
 			query = """
@@ -74,17 +78,53 @@ class SQLConnectorService:
 
 		#Make the commit and exit MySQL
 		self.MySQL.commit()
+		
+	def sql_extract(self):
+		#This script is strictly for the capstone_db and summary table
+		self.cursor.execute("""USE capstone_db;""")
+		
+		#print the hard coded host count to the screen
+		print("Total hosts encountered:")
+		self.cursor.execute("""SELECT host_count FROM summary;""")
+		results = self.cursor.fetchall()
+		type = "get: "
+		for row in results:
+			print(f"{type}{row[0]}")
+			type = "post: "
+		print("\n")
+
+		#print the hard coded url count to the screen
+		print("Total unique URLS encountered:")
+		self.cursor.execute("""SELECT unique_URLS FROM summary;""")
+		results = self.cursor.fetchall()
+		type = "get: "
+		for row in results:
+			print(f"{type}{row[0]}")
+			type = "post: "
+		print("\n")
+			
+		#print the hard coded accept boolean to the screen
+		print("Accept exists:")
+		self.cursor.execute("""SELECT Accept_exists FROM summary;""")
+		results = self.cursor.fetchall()
+		type = "get: "
+		for row in results:
+			print(f"{type}{row[0]}")
+			type = "post: "
+			
+		print("\n")
 
 def main():
 	extractor = MongoSummaryService()
 	connector = SQLConnectorService()
 	connector.create_sql_table()
-	
+
 	while True:
 		new_summary = extractor.create_summary()
 		connector.insert_into_sql(new_summary)
-		print(new_summary)
+		connector.sql_extract()
 		time.sleep(5)
+		os.system('cls')
 
 	
 if __name__ == '__main__':
