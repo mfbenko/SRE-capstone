@@ -6,7 +6,7 @@ from kafka import KafkaProducer
 import json
 
 class KafkaProducerService:
-    def __init__(self,limit,logger=None):
+    def __init__(self,logger=None, limit=None):
         self.rows = ''
         self.topic = 'my_topic'
         self.producer = None
@@ -42,7 +42,7 @@ class KafkaProducerService:
                 self.producer.send(self.topic, value=item) 
                 self.producer.flush() # Ensure the message is sent immediately
                 self.logger.info(f"Message {index} sent successfully.")
-            if index == self.limit:
+            if self.limit == index and self.index is not None:
                 break
 
         self.logger.info(f"Sending completed.") 

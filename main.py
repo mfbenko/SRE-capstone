@@ -29,7 +29,7 @@ LIMIT = 5
 
 def run_producer():
     try:
-        producer_service = KafkaProducerService(LIMIT, logger)
+        producer_service = KafkaProducerService(logger=logger, limit=LIMIT)
         producer_service.create_producer(file=CSV_FILE)
         producer_service.send_message()
     except Exception as e:
@@ -84,9 +84,3 @@ async def on_shutdown():
             logger.info("Consumer task cancelled")
 
     logger.info(f"Producer and consumer shutdown complete")
-
-
-@app.get("/")
-async def health_check():
-    logger.info("Running Health Check")
-    return {"status": "running"}
