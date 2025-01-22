@@ -34,21 +34,24 @@ class KafkaConsumerService:
     def consume_messages(self):
         for message in self.consumer:
             data = message.value
-            self.logger.info(f"\n\033[92mReceived message:\033[0m {json.dumps(data, indent=4)}") 
+            self.logger.info(f"\n\033[92mReceived message:\033[0m {json.dumps(data, indent=4)}") if self.logger is not None else None
             yield data
 
     # Method to insert data into MongoDB Collection
     def insert_into_mongodb(self, data):
         try:
             self.collection.insert_one(data)
-            self.logger.info(f"Inserted data into MongoDB: {data}")
+            self.logger.info(f"Inserted data into MongoDB: {data}") if self.logger is not None else None
+            return True
         except Exception as e:
-            self.logger.error(f"Error inserting data into MongoDB: {e}")
-
+            self.logger.error(f"Error inserting data into MongoDB: {e}") if self.logger is not None else None
+            return False
     # Method to start the consumer, consumer message, and insert into MongoDB
     async def run(self):
         for message_data in self.consume_messages():
             try:
                 self.insert_into_mongodb(message_data)
+                return True
             except Exception as e:
-                self.logger.error(f"Error processing message: {e}")
+                self.logger.error(f"Error processing message: {e}") if self.logger is not None else None
+                return False
