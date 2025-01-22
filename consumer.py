@@ -64,7 +64,7 @@ class KafkaConsumerService:
     def consume_messages(self):
         for message in self.consumer:
             data = message.value
-            #print(f"Receiving Data:\t\t{data}\n")
+            print(f"Receiving Data:\t\t{data}\n")
             yield data
 
     # Method to insert data into MongoDB Collection
