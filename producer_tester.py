@@ -3,7 +3,7 @@ import unittest
 import csv
 import json
 from producer import KafkaProducerService
-from unittest.mock import patch, MagicMock
+from unittest.mock import patch
 
 class TestKafkaProducer(unittest.TestCase):
     #use the test database csv file to make sure that serialization works

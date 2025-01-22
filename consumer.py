@@ -59,7 +59,7 @@ class KafkaConsumerService:
                 group_id='my-group',
                 value_deserializer=lambda x: json.loads(x.decode('utf-8'))
             )
-	#message['_id'] = ObjectId()
+
     # Method to Consume Message from the Kafka Topic
     def consume_messages(self):
         for message in self.consumer:
@@ -70,11 +70,13 @@ class KafkaConsumerService:
     # Method to insert data into MongoDB Collection
     def insert_into_mongodb(self, data):
         self.collection.insert_one(data)
+        return True
 
     # Method to start the consumer, consumer message, and insert into MongoDB
     def run(self):
         for message_data in self.consume_messages():
             self.insert_into_mongodb(message_data)
+        return True
 
 if __name__ == "__main__":
     kafka_topic = 'my_topic'
