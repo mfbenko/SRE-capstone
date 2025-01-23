@@ -75,17 +75,17 @@ class SQLConnectorService:
 		#Make the commit and exit MySQL
 		self.MySQL.commit()
 
-def main():
-	extractor = MongoSummaryService()
-	connector = SQLConnectorService()
-	connector.create_sql_table()
+# def main():
+# 	extractor = MongoSummaryService()
+# 	connector = SQLConnectorService()
+# 	connector.create_sql_table()
 	
-	while True:
-		new_summary = extractor.create_summary()
-		connector.insert_into_sql(new_summary)
-		print(new_summary)
-		time.sleep(5)
+# 	while True:
+# 		new_summary = extractor.create_summary()
+# 		connector.insert_into_sql(new_summary)
+# 		print(new_summary)
+# 		time.sleep(5)
 
 	
-if __name__ == '__main__':
-	main()
+# if __name__ == '__main__':
+# 	main()
