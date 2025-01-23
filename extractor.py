@@ -114,7 +114,6 @@ class SQLConnectorService:
 			
 		print("\n")
 
-<<<<<<< HEAD
 # def main():
 # 	extractor = MongoSummaryService()
 # 	connector = SQLConnectorService()
@@ -125,20 +124,5 @@ class SQLConnectorService:
 # 		connector.insert_into_sql(new_summary)
 # 		print(new_summary)
 # 		time.sleep(5)
-=======
-def main():
-	extractor = MongoSummaryService()
-	connector = SQLConnectorService()
-	connector.create_sql_table()
-
-	while True:
-		new_summary = extractor.create_summary()
-		connector.insert_into_sql(new_summary)
-		connector.sql_extract()
-		time.sleep(5)
-		os.system('cls')
->>>>>>> 738f916f9e904d3adcab22881460eaa362ab26b3
-
-	
 # if __name__ == '__main__':
 # 	main()
