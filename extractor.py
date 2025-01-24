@@ -1,4 +1,5 @@
 #necessary import to get pull information out of the database
+import asyncio
 from pymongo import MongoClient
 import pandas
 import mysql.connector
@@ -7,16 +8,18 @@ import os
 
 class MongoSummaryService:
 
-	def __init__(self):
+	def __init__(self, logger=None):
 		#connecting to the mongodb
 		self.client = MongoClient('mongodb://localhost:27017/')
 		self.db = self.client['kafka_web_attack_data']
 		self.collection = self.db['consumer_records']
+		self.logger = logger
 		
 	def __del__(self):
 		self.client.close()
 
 	def create_summary(self):
+		print("EXTRACTOR: Creating Summary Record")
 		#returns all messages in the database and creates pandas data frame
 		results = self.collection.find()
 		pandasTable = pandas.DataFrame(results)
@@ -30,6 +33,17 @@ class MongoSummaryService:
 		).reset_index()
 		
 		return summary_record
+	
+	async def run(self):
+		self.logger.info("EXTRACTOR: Runing now...")
+		while True:
+			try:
+				self.logger.info("EXTRACTOR: Inside extraction loop")
+				new_summary = self.create_summary()
+				self.logger.info(f"\n\033[38;5;202mInserted new summary:\033[0m\n{new_summary}") if self.logger is not None else None
+			except Exception as e:
+				self.logger.error(f"Error during extraction or insertion: {e}") if self.logger is not None else None
+			await asyncio.sleep(5)
 		
 class SQLConnectorService:
 	

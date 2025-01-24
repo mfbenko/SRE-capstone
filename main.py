@@ -3,7 +3,7 @@ import threading
 import logging
 from fastapi import FastAPI
 from consumer import KafkaConsumerService
-from extractor import MongoSummaryService, SQLConnectorService
+from extractor import MongoSummaryService
 from producer import KafkaProducerService
 
 # Configure logging
@@ -26,7 +26,7 @@ MONGO_DB = 'kafka_web_attack_data'
 MONGO_COLLECTION = 'consumer_records'
 CSV_FILE = 'csic_database.csv'
 
-# TODO:
+# # TODO:
 LIMIT = None
 
 def run_producer():
@@ -53,17 +53,14 @@ async def run_consumer():
         logger.error(f"Consumer encountered an error: {e}")
     
 async def run_extractor():
-  extractor = MongoSummaryService()
-  connector = SQLConnectorService()
-  connector.create_sql_table()
-  while True:
+    logger.info("EXTRACTOR: Inside of run_extractor()")
     try:
-      new_summary = extractor.create_summary()
-      connector.insert_into_sql(new_summary)
-      logger.info(f"Inserted new summary: {new_summary}")
+        logger.info("EXTRACTOR: Attempting to create MongoSummaryService Object")
+        extractor_service = MongoSummaryService(logger=logger)
+        logger.info("EXTRACTOR: MongoSummaryService Object creating sucess...starting to run!")
+        await extractor_service.run()
     except Exception as e:
-      logger.error(f"Error during extraction or insertion: {e}")
-    await asyncio.sleep(5)
+        logger.error(f"Extractor encountered an error: {e}")
 
 
 @app.on_event("startup")
@@ -71,29 +68,33 @@ async def on_startup():
     global producer_thread, consumer_task, extractor_task
     logger.info(f"Starting producer, consumer and extractor")
 
-    # Start producer task
+    # # Start producer task
     producer_thread = threading.Thread(target=run_producer, daemon=True)
     producer_thread.start()
+    logger.info(f"Producer started")
+  
 
-    # Start consumer task
-    consumer_task = asyncio.create_task(run_consumer())
+    # consumer_task = asyncio.create_task(run_consumer())
+    # logger.info(f"Consumer started")
+    await run_consumer()
 
-    # Start Extractor task
-    extractor_task = asyncio.create_task(run_extractor())
-
+    logger.info(f"Extractor started")
+    # extractor_task = asyncio.create_task(run_extractor())
+    await run_extractor()
+    # await asyncio.gather(producer_thread, consumer_task, extractor_task)
     logger.info(f"Producer, consumer and extractor started")
 
 
 @app.on_event("shutdown")
 async def on_shutdown():
-    global producer_thread, consumer_task
+    global producer_thread, consumer_task, extractor_task
     logger.info(f"Shutting down producer, consumer and extractor")
 
-    # Stop producer thread
+    # # Stop producer thread
     if producer_thread and producer_thread.is_alive():
         producer_thread.join()
 
-    # Cancel consumer task
+    # # Cancel consumer task
     if consumer_task:
         consumer_task.cancel()
         try:
