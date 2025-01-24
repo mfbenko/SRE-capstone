@@ -1,3 +1,4 @@
+import asyncio
 import json
 from kafka import KafkaConsumer
 from pymongo import MongoClient
@@ -47,8 +48,9 @@ class KafkaConsumerService:
         
     # Method to start the consumer, consumer message, and insert into MongoDB
     async def run(self):
-        for message_data in self.consume_messages():
-            try:
-                self.insert_into_mongodb(message_data)
-            except Exception as e:
-                self.logger.error(f"Error processing message: {e}") if self.logger is not None else None
+            loop = asyncio.get_event_loop()
+            for message_data in self.consume_messages():
+                try:
+                    await loop.run_in_executor(None, self.insert_into_mongodb, message_data) 
+                except Exception as e:
+                    self.logger.error(f"Error processing message: {e}")

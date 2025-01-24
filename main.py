@@ -1,4 +1,5 @@
 import asyncio
+import os
 import threading
 import logging
 from fastapi import FastAPI
@@ -27,7 +28,7 @@ MONGO_COLLECTION = 'consumer_records'
 CSV_FILE = 'csic_database.csv'
 
 # # TODO:
-LIMIT = None
+LIMIT = 20
 
 def run_producer():
     try:
@@ -48,71 +49,99 @@ async def run_consumer():
             MONGO_COLLECTION,
             logger
         )
+        logger.info("Consumer Service sucessfully created.")
         await consumer_service.run()
+        logger.info("Consumer Service running")
     except Exception as e:
         logger.error(f"Consumer encountered an error: {e}")
     
 async def run_extractor():
-    logger.info("EXTRACTOR: Inside of run_extractor()")
     try:
-        logger.info("EXTRACTOR: Attempting to create MongoSummaryService Object")
         extractor_service = MongoSummaryService(logger=logger)
-        logger.info("EXTRACTOR: MongoSummaryService Object creating sucess...starting to run!")
+        logger.info("Extractor Service successfully created")
         await extractor_service.run()
+        logger.info("Extractor Service running")
     except Exception as e:
         logger.error(f"Extractor encountered an error: {e}")
 
-
-@app.on_event("startup")
-async def on_startup():
-    global producer_thread, consumer_task, extractor_task
-    logger.info(f"Starting producer, consumer and extractor")
-
-    # # Start producer task
+async def main():
+    os.system('cls')
     producer_thread = threading.Thread(target=run_producer, daemon=True)
     producer_thread.start()
-    logger.info(f"Producer started")
+
+    consumer_task = asyncio.create_task(run_consumer())
+    extractor_task = asyncio.create_task(run_extractor())
+
+    await asyncio.gather(extractor_task)
+    await asyncio.gather(consumer_task)
+    
+    producer_thread.join()
+    logger.info("Done running")
+
+if __name__ == "__main__":
+    asyncio.run(main())
+
+
+
+
+
+
+
+
+
+
+# @app.on_event("startup")
+# async def on_startup():
+#     global producer_thread, consumer_task, extractor_task
+#     logger.info(f"Starting producer, consumer and extractor")
+
+#     # # Start producer task
+#     producer_thread = threading.Thread(target=run_producer, daemon=True)
+#     producer_thread.start()
+#     logger.info(f"Producer started")
   
 
-    # consumer_task = asyncio.create_task(run_consumer())
-    # logger.info(f"Consumer started")
-    await run_consumer()
+#     # consumer_task = asyncio.create_task(run_consumer())
+#     # logger.info(f"Consumer started")
+#     await run_consumer()
 
-    logger.info(f"Extractor started")
-    # extractor_task = asyncio.create_task(run_extractor())
-    await run_extractor()
-    # await asyncio.gather(producer_thread, consumer_task, extractor_task)
-    logger.info(f"Producer, consumer and extractor started")
+#     logger.info(f"Extractor started")
+#     # extractor_task = asyncio.create_task(run_extractor())
+#     await run_extractor()
+#     # await asyncio.gather(producer_thread, consumer_task, extractor_task)
+#     logger.info(f"Producer, consumer and extractor started")
 
 
-@app.on_event("shutdown")
-async def on_shutdown():
-    global producer_thread, consumer_task, extractor_task
-    logger.info(f"Shutting down producer, consumer and extractor")
+# @app.on_event("shutdown")
+# async def on_shutdown():
+#     global producer_thread, consumer_task, extractor_task
+#     logger.info(f"Shutting down producer, consumer and extractor")
 
-    # # Stop producer thread
-    if producer_thread and producer_thread.is_alive():
-        producer_thread.join()
+#     # # Stop producer thread
+#     if producer_thread and producer_thread.is_alive():
+#         producer_thread.join()
 
-    # # Cancel consumer task
-    if consumer_task:
-        consumer_task.cancel()
-        try:
-            await consumer_task
-        except asyncio.CancelledError:
-            logger.info("Consumer task cancelled")
+#     # # Cancel consumer task
+#     if consumer_task:
+#         consumer_task.cancel()
+#         try:
+#             await consumer_task
+#         except asyncio.CancelledError:
+#             logger.info("Consumer task cancelled")
 
-    # Cancel extractor task
-    if extractor_task:
-        extractor_task.cancel()  
-        try:
-            await extractor_task  
-        except asyncio.CancelledError:
-            logger.info("Extractor task cancelled")
+#     # Cancel extractor task
+#     if extractor_task:
+#         extractor_task.cancel()  
+#         try:
+#             await extractor_task  
+#         except asyncio.CancelledError:
+#             logger.info("Extractor task cancelled")
 
-    logger.info(f"Producer, consumer and extractor shutdown complete")
+#     logger.info(f"Producer, consumer and extractor shutdown complete")
 
-# SANITY CHECK! 
-@app.get("/")
-async def health_check():
-    return {"message": "Application is running!"}
+
+
+# # SANITY CHECK! 
+# @app.get("/")
+# async def health_check():
+#     return {"message": "Application is running!"}

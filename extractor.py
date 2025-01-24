@@ -43,7 +43,9 @@ class MongoSummaryService:
 				self.logger.info(f"\n\033[38;5;202mInserted new summary:\033[0m\n{new_summary}") if self.logger is not None else None
 			except Exception as e:
 				self.logger.error(f"Error during extraction or insertion: {e}") if self.logger is not None else None
-			await asyncio.sleep(5)
+			finally:
+				await asyncio.sleep(5)
+			
 		
 class SQLConnectorService:
 	
