@@ -1,5 +1,6 @@
 import csv
 import json
+import random
 import time
 from kafka import KafkaProducer
 import json
@@ -16,14 +17,17 @@ class KafkaProducerService:
     @staticmethod
     def json_serializer(data):
         return json.dumps(data).encode('utf-8')
-
-    def create_producer(self,file='csic_database.csv'):
+    
+    def read_database(self, file):
         # Open database and read content
         with open(file, 'r') as file:
             self.logger.info(f"File {file} created successfully.") if self.logger is not None else None
             csv_reader = csv.DictReader(file)
             self.rows = list(csv_reader)
-        
+        random.shuffle(self.rows) 
+
+    def create_producer(self, file):
+        self.read_database(file)
         # Kafka Topic and Producer Object Creation
         self.producer = KafkaProducer(
             api_version=(0,11,5),
