@@ -1,0 +1,34 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: sre-capstone-deployment
+  labels:
+    app: k8s-capstone
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: sre-capstone-deployment
+# pod definition
+  template:
+    metadata:
+      labels:
+        app: sre-capstone-deployment
+    spec:
+      containers:
+      - name: sre-capstone-mongodb
+        image: apache/kafka:latest
+        ports:
+        - containerPort: 27017
+      - name: sre-capstone-prometheus
+        image: prom/prometheus:latest
+        ports:
+        - containerPort: 9090
+      - name: sre-capstone-kafka
+        image: apache/kafka:latest
+        ports:
+        - containerPort: 9092
+      - name: sre-capstone-grafana
+        image: grafana/grafana:latest
+        ports:
+        - containerPort: 3000
