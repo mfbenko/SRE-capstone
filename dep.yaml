@@ -3,21 +3,21 @@ kind: Deployment
 metadata:
   name: sre-capstone-deployment
   labels:
-    app: k8s-capstone
+    app: sre-capstone
 spec:
   replicas: 1
   selector:
     matchLabels:
-      app: sre-capstone-deployment
+      app: sre-capstone
 # pod definition
   template:
     metadata:
       labels:
-        app: sre-capstone-deployment
+        app: sre-capstone
     spec:
       containers:
       - name: sre-capstone-mongodb
-        image: apache/kafka:latest
+        image: mongo:latest
         ports:
         - containerPort: 27017
       - name: sre-capstone-prometheus
