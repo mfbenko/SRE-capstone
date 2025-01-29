@@ -3,9 +3,9 @@ import os
 import threading
 import logging
 from fastapi import FastAPI
-from consumer import KafkaConsumerService
-from extractor import MongoSummaryService, SQLConnectorService
-from producer import KafkaProducerService
+from src.consumer import KafkaConsumerService
+from src.extractor import MongoSummaryService, SQLConnectorService
+from src.producer import KafkaProducerService
 
 # # TODO:
 LIMIT = None

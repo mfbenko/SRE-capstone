@@ -2,7 +2,7 @@
 import unittest
 import csv
 import json
-from producer import KafkaProducerService
+from src.producer import KafkaProducerService
 from unittest.mock import patch
 
 class TestKafkaProducer(unittest.TestCase):

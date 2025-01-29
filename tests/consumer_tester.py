@@ -1,9 +1,11 @@
 #using unitest to test consumer.py functionality
 import unittest
-from consumer import KafkaConsumerService
+
 from unittest.mock import MagicMock
 import asyncio
 from pymongo.collection import Collection
+
+from src.consumer import KafkaConsumerService
 
 class TestKafkaConsuner(unittest.TestCase):
 	#mock the consumer instance so that each test can be isolated
