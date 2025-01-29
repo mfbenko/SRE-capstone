@@ -1,0 +1,36 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: my-web-dep
+  labels:
+    app: k8s-class
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: my-web-app
+  template:
+    metadata:
+      labels:
+        app: my-web-app
+    spec:
+      containers:
+        - name: sre-capstone-kafka
+          image: apache/kafka:latest
+          ports:
+            - containerPort: 9092
+
+        - name: sre-capstone-mongodb
+          image: mongo:latest
+          ports:
+            - containerPort: 27017
+
+        - name: sre-capstone-prometheus
+          image: prom/prometheus:latest
+          ports:
+            - containerPort: 9090
+
+        - name: sre-capstone-grafana
+          image: grafana/grafana:latest
+          ports:
+            - containerPort: 3000

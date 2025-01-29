@@ -24,17 +24,23 @@ extractor_task = None
 
 # Kafka and MongoDB configurations
 KAFKA_TOPIC = 'my_topic'
-KAFKA_BROKERS = ['localhost:9092']
-MONGO_URI = 'mongodb://localhost:27017/'
+KAFKA_BROKERS = ['localhost:9092'] # Change these!
+MONGO_URI = 'mongodb://localhost:27017/' #cHANGE THESE! 
 MONGO_DB = 'kafka_web_attack_data'
 MONGO_COLLECTION = 'consumer_records'
 CSV_FILE = 'db/csic_database.csv'
 
 def run_producer():
     try:
-        producer_service = KafkaProducerService(logger=logger, limit=LIMIT)
-        producer_service.create_producer(file=CSV_FILE)
-        producer_service.send_message()
+        producer_service = KafkaProducerService(KAFKA_TOPIC,
+            KAFKA_BROKERS,
+            CSV_FILE,
+            logger, 
+            LIMIT
+        )
+        logger.info("Producer Service sucessfully created.")
+        producer_service.run()
+        logger.info("Producer Service running")
     except Exception as e:
         logger.error(f"Producer encountered an error: {e}")
 
