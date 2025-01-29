@@ -8,35 +8,46 @@ Before you begin, ensure that you have the following installed:
    Follow the installation instructions for Docker, which also installs Docker Compose:  
    [Install Docker](https://docs.docker.com/get-docker/)
 
+2. **MySQL**
+   Follow the installation instructions for MySQL. For the purposes of this demonstration the root password has been set to "root". If you don't want to set your password to "root" please edit line 55 of src/extractor.py to whatever your root password is.
+   [Install MySQL](https://dev.mysql.com/downloads/installer/)
+
+3. **Python/dependecies**
+Please read documents/project documentation.pdf and install Python and all dependecies using:
+```bash
+   pip
+```
 
 ## Enviornment Setup Instructions
 
 ### 1. Clone the Repository
-Clone this repository which includes the necessary `docker-compose.yml` file:
+Clone this repository which includes the necessary `deployment.yml` file:
 
 ```bash
 git clone git@github.com:mfbenko/SRE-capstone.git
 cd SRE-capstone
 ```
 
-### 2. Start Kafka and MongoDB Using Docker Compose
+### 2. Start Kafka, MongoDB, Prometheus, and Grafana Kubernetes Deployment 
 Run the following command to start Kafka and MongoDB services:
 ```bash
-docker-compose up -d
+kubectl apply -f deployment.yaml
 ```
-This will start Kafka and MongoDB containers in detached mode.
+This will start all needed services in a kubernetes cluster.
 
-### 3. Verify the Services Are Running
-To verify that the services are up and running, use the following command:
+### 3. Port forward the services
+Services must be port forwarded so that they can run as a daemon and be reachable from the application
 ```bash
-docker-compose ps
+Start-Process -FilePath "kubectl" -ArgumentList "port-forward svc/kafka-service 9092:9092"
+Start-Process -FilePath "kubectl" -ArgumentList "port-forward svc/mongoservice 27017:27017"
+Start-Process -FilePath "kubectl" -ArgumentList "port-forward svc/kafka-service 9092:9092"
+Start-Process -FilePath "kubectl" -ArgumentList "port-forward svc/mongoservice 27017:27017"
 ```
-This will list the containers and their current status.
 
 ### 4. Stopping the Services
-When you're done, you can stop the services with the following command:
+When you're done, you can stop the services by deleting the deployment:
 ```bash
-docker-compose down
+kubectl delete deployment my-web-dep
 ```
-This will stop and remove all containers.
+This will stop the pods in Kubernetes.
 
