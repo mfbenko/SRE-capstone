@@ -1,11 +1,14 @@
 #using unitest to test consumer.py functionality
 import unittest
-
+import sys
+import os
 from unittest.mock import MagicMock
 import asyncio
 from pymongo.collection import Collection
 
-from src.consumer import KafkaConsumerService
+#Add the 'src' folder to the sys.path inorder to gain acces to kfkaConsumerService
+sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), '..', 'src')))
+from consumer import KafkaConsumerService
 
 class TestKafkaConsuner(unittest.TestCase):
 	#mock the consumer instance so that each test can be isolated
