@@ -53,3 +53,5 @@ coverage-report/
 # Ignore temporary files
 *.tmp
 *.swp
+
+ml/model.joblib
