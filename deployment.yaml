@@ -3,7 +3,7 @@ kind: Deployment
 metadata:
   name: my-web-dep
   labels:
-    app: my-web-app
+    app: my-web-dep
 spec:
   replicas: 1
   selector:
@@ -19,7 +19,6 @@ spec:
           image: apache/kafka:latest
           ports:
             - containerPort: 9092
-              protocol: TCP
 
         - name: sre-capstone-mongodb
           image: mongo:latest
