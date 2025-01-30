@@ -1,24 +1,16 @@
-import pymongo
-import json
+from pymongo import MongoClient
 
-def validate_document(document, schema):
-    """Validates a document against a JSON schema."""
-    try:
-        jsonschema.validate(document, schema)
-        return True, None
-    except jsonschema.ValidationError as e:
-        return False, str(e)
 
-def main():
-    # Connect to MongoDB
-    client = MongoClient("mongodb://localhost:27017/")
-    db = client["your_database"]
-    collection = db["your_collection"]
-
-    # Pulled from Kaggle
-    schema = {
-        "type": "object",
-        "properties": {
+def create_collection(coll_name):
+    client = MongoClient('mongodb://localhost:27017/')
+    db = client.test
+    result = db.create_collection(coll_name, validator={
+        '$jsonSchema': {
+            'bsonType': 'object',
+            'additionalProperties': True,
+            'required': ['component', 'path'],
+            'properties': {
+                'component': {
             "Normal_Anolmalous": {"type": "string"},
             "Get_Post": {"type": "string"},
             "User-Agent": {"type": "string"},
@@ -29,18 +21,17 @@ def main():
             "Accept-charset": {"type": "string"},
             "Language": {"type": "string"},
             "Host": {"type": "string"}
-           
-        },
-        #Still gotta fill this out
-        "required": ["name", "age"]
-    }
+                },
+                'path': {
+                    'bsonType': 'string',
+                    'description': 'Set to default value'
+                }
+            }
+        }
+    })
 
- # Iterate over documents in the collection
-    for document in collection.find():
-        is_valid, error_message = validate_document(document, schema)
-        if not is_valid:
-            print(f"Document {document['_id']} failed validation: {error_message}")
+    print(result)
 
-if __name__ == "__main__":
-    main()
-   
+
+if __name__ == '__main__':
+    create_collection('my_coll')
