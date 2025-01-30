@@ -1,0 +1,65 @@
+apiVersion: apps/v1
+kind: StatefulSet
+metadata:
+  name: kafka
+  labels:
+    app: kafka
+spec:
+  serviceName: kafka
+  replicas: 10  # Number of Kafka brokers
+  selector:
+    matchLabels:
+      app: kafka
+  template:
+    metadata:
+      labels:
+        app: kafka
+    spec:
+      containers:
+        - name: kafka
+          image: apache/kafka:latest
+          ports:
+            - containerPort: 9092
+          env:
+            - name: KAFKA_ZOOKEEPER_CONNECT
+              value: "zookeeper-service:2181"
+            - name: KAFKA_LISTENERS
+              value: "PLAINTEXT://0.0.0.0:9092"
+            - name: KAFKA_ADVERTISED_LISTENERS
+              value: "PLAINTEXT://kafka-$(hostname | awk -F'-' '{print $NF}').kafka:9092"
+            - name: KAFKA_LOG_DIRS
+              value: "/var/lib/kafka/data"
+            - name: KAFKA_OFFSETS_TOPIC_REPLICATION_FACTOR
+              value: "3"
+          command:
+            - sh
+            - "-c"
+            - |
+              export BROKER_ID=$(echo ${HOSTNAME##*-})
+              echo "Starting Kafka with broker ID $BROKER_ID"
+              export KAFKA_BROKER_ID=$BROKER_ID
+              /opt/kafka/bin/kafka-server-start.sh /opt/kafka/config/server.properties
+          volumeMounts:
+            - name: kafka-data
+              mountPath: /var/lib/kafka/data
+  volumeClaimTemplates:
+    - metadata:
+        name: kafka-data
+      spec:
+        accessModes: ["ReadWriteOnce"]
+        resources:
+          requests:
+            storage: 1Gi
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: kafka
+spec:
+  clusterIP: None  # Headless service for StatefulSet
+  selector:
+    app: kafka
+  ports:
+    - protocol: TCP
+      port: 9092
+      targetPort: 9092
