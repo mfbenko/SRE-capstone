@@ -39,8 +39,8 @@ spec:
     app: my-web-app
   ports:
     - protocol: TCP
-      port: 27012
-      targetPort: 27012
+      port: 27017
+      targetPort: 27017
 ---
 apiVersion: v1
 kind: Service

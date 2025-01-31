@@ -39,9 +39,10 @@ This will start all needed services in a kubernetes cluster.
 Services must be port forwarded so that they can run as a daemon and be reachable from the application
 ```bash
 Start-Process -FilePath "kubectl" -ArgumentList "port-forward svc/kafka-service 9092:9092"
-Start-Process -FilePath "kubectl" -ArgumentList "port-forward svc/mongoservice 27017:27017"
-Start-Process -FilePath "kubectl" -ArgumentList "port-forward svc/kafka-service 9092:9092"
-Start-Process -FilePath "kubectl" -ArgumentList "port-forward svc/mongoservice 27017:27017"
+Start-Process -FilePath "kubectl" -ArgumentList "port-forward svc/zookeeper-service 2181:2181"
+Start-Process -FilePath "kubectl" -ArgumentList "port-forward svc/mongo-service 27017:27017"
+Start-Process -FilePath "kubectl" -ArgumentList "port-forward svc/prometheus-service 9090:9090"
+Start-Process -FilePath "kubectl" -ArgumentList "port-forward svc/grafana-service 3000:3000"
 ```
 
 ### 4. Stopping the Services
