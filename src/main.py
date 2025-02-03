@@ -24,7 +24,10 @@ extractor_task = None
 
 # Kafka and MongoDB configurations
 KAFKA_TOPIC = 'my_topic'
-KAFKA_BROKERS = ['localhost:9092'] 
+#EXTERNAL_IP_OR_HOSTNAME = os.getenv("EXTERNAL_KAFKA_HOSTNAME")
+#if not EXTERNAL_IP_OR_HOSTNAME:
+#    raise ValueError("EXTERNAL_KAFKA_HOSTNAME environment variable not set")  # Or handle gracefully
+KAFKA_BROKERS = ["localhost:9093"]
 MONGO_URI = 'mongodb://localhost:27017/'  
 MONGO_DB = 'kafka_web_attack_data'
 MONGO_COLLECTION = 'consumer_records'
@@ -87,24 +90,3 @@ async def on_startup():
     
     if producer_thread and producer_thread.is_alive():
         producer_thread.join()
-
-# @app.on_event("shutdown")
-# async def on_shutdown():
-#     # # Cancel consumer task
-#     if consumer_task:
-#         consumer_task.cancel()
-#         try:
-#             await consumer_task
-#         except asyncio.CancelledError:
-#             logger.info("Consumer task cancelled")
-
-#     # Cancel extractor task
-#     if extractor_task:
-#         extractor_task.cancel()  
-#         try:
-#             await extractor_task  
-#         except asyncio.CancelledError:
-#             logger.info("Extractor task cancelled")
-
-# if __name__ == "__main__":
-#     asyncio.run(main())
