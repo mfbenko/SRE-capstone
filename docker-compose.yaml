@@ -20,6 +20,28 @@ services:
     ports:
       - "27017:27017"
 
+  # MongoDB scraper
+  mongodb-exporter:
+      image: bitnami/mongodb-exporter:latest
+      container_name: sre-capstone-mongodb-exporter
+      environment:
+        - MONGODB_URI=mongodb://mongodb:27017
+      ports:
+      - "9216:9216"
+      depends_on:
+      - mongodb
+      
+  # kafka scraper
+  kafka-jmx-exporter:
+      image: danielqsj/kafka-exporter:latest
+      container_name: sre-capstone-kafka-exporter
+      environment:
+        - KAFKA_SERVER=kafka:9092
+      ports:
+        - "9308:9308"
+      depends_on:
+        - kafka
+
   # Prometheus service configuration
   prometheus:
     image: prom/prometheus:latest
