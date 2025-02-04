@@ -8,7 +8,7 @@ from src.extractor import MongoSummaryService, SQLConnectorService
 from src.producer import KafkaProducerService
 
 # # TODO:
-LIMIT = None
+LIMIT = 20
 
 # Configure logging
 logging.basicConfig(level=logging.INFO, format=f"[%(asctime)s] %(levelname)s - (%(filename)s:%(lineno)d) - %(message)s")
@@ -27,7 +27,7 @@ KAFKA_TOPIC = 'my_topic'
 #EXTERNAL_IP_OR_HOSTNAME = os.getenv("EXTERNAL_KAFKA_HOSTNAME")
 #if not EXTERNAL_IP_OR_HOSTNAME:
 #    raise ValueError("EXTERNAL_KAFKA_HOSTNAME environment variable not set")  # Or handle gracefully
-KAFKA_BROKERS = ["localhost:9093"]
+KAFKA_BROKERS = ["localhost:9092"]
 MONGO_URI = 'mongodb://localhost:27017/'  
 MONGO_DB = 'kafka_web_attack_data'
 MONGO_COLLECTION = 'consumer_records'
