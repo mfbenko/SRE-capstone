@@ -10,7 +10,9 @@ services:
     image: apache/kafka:latest
     container_name: sre-capstone-kafka
     ports:
-      - "9092:9092"  
+      - "9092:9092"
+    networks:
+    - monitoring
 
   # MongoDB service configuration
   mongodb:
@@ -19,6 +21,8 @@ services:
     restart: always
     ports:
       - "27017:27017"
+    networks:
+    - monitoring
 
   # MongoDB scraper
   mongodb-exporter:
@@ -30,6 +34,8 @@ services:
       - "9216:9216"
       depends_on:
       - mongodb
+      networks:
+      - monitoring
       
   # kafka scraper
   kafka-jmx-exporter:
@@ -41,6 +47,8 @@ services:
         - "9308:9308"
       depends_on:
         - kafka
+      networks:
+      - monitoring
 
   # Prometheus service configuration
   prometheus:
@@ -50,6 +58,8 @@ services:
       - "9090:9090"
     volumes:
       - ./prometheus.yaml:/etc/prometheus/prometheus.yml
+    networks:
+      - monitoring
 
   # Grafana service configuration
   grafana:
@@ -64,6 +74,12 @@ services:
 
     volumes:
       - ./grafana_data:/var/lib/grafana
+    networks:
+      - monitoring
+
+networks:
+  monitoring:
+    driver: bridge
 volumes:
   mongodb_data:
   grafana_data:
