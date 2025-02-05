@@ -26,4 +26,4 @@ jobs:
         yes | mypy . --install-types || true
         if [ -f requirements.txt ]; then pip install -r requirements.txt; fi
     - name: Run mypy
-      run: mypy --ignore-missing-imports .
+      run: mypy --explicit-package-bases --ignore-missing-imports .
