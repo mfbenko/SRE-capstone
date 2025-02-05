@@ -2,6 +2,7 @@ import asyncio
 import json
 from kafka import KafkaConsumer
 from pymongo import MongoClient
+from ml.deploy import AnomalyDetector
 
 class KafkaConsumerService:
     def __init__(self, topic, bootstrap_servers, mongo_uri, database_name, collection_name, logger=None):
@@ -31,11 +32,14 @@ class KafkaConsumerService:
             value_deserializer=lambda x: json.loads(x.decode('utf-8'))
         )
 
+        self.detector = AnomalyDetector()
+
     # Method to Consume Message from the Kafka Topic
     def consume_messages(self):
         for message in self.consumer:
             data = message.value
-            self.logger.info(f"\n\033[92mReceived message:\033[0m {json.dumps(data, indent=4)}") if self.logger is not None else None
+            result = self.detector.predict_anomaly(data)
+            self.logger.info(f"\n\033[92mReceived message\033[0m \033[91m\033[95m({result})\033[0m: {json.dumps(data, indent=4)}") if self.logger is not None else None
             yield data
 
     # Method to insert data into MongoDB Collection

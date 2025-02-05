@@ -8,7 +8,7 @@ from src.extractor import MongoSummaryService, SQLConnectorService
 from src.producer import KafkaProducerService
 
 # # TODO:
-LIMIT = 20
+LIMIT = None
 
 # Configure logging
 logging.basicConfig(level=logging.INFO, format=f"[%(asctime)s] %(levelname)s - (%(filename)s:%(lineno)d) - %(message)s")
