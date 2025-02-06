@@ -21,34 +21,30 @@ Please read documents/project documentation.pdf and install Python and all depen
 ## Enviornment Setup Instructions
 
 ### 1. Clone the Repository
-Clone this repository which includes the necessary `deployment.yml` file:
+Clone this repository which includes the necessary `docker-compose.yaml` file:
 
 ```bash
 git clone git@github.com:mfbenko/SRE-capstone.git
 cd SRE-capstone
 ```
 
-### 2. Start Kafka, MongoDB, Prometheus, and Grafana Kubernetes Deployment 
+### 2. Start the containers
 Run the following command to start Kafka and MongoDB services:
 ```bash
-kubectl apply -f deployment.yaml
+docker-compose up -d
 ```
-This will start all needed services in a kubernetes cluster.
+This will start all needed services in docker.
 
-### 3. Port forward the services
-Services must be port forwarded so that they can run as a daemon and be reachable from the application
+### 3. Start the application using fastAPI
+Type this command to start the python scripts
 ```bash
-Start-Process -FilePath "kubectl" -ArgumentList "port-forward svc/kafka-service 9092:9092"
-Start-Process -FilePath "kubectl" -ArgumentList "port-forward svc/zookeeper-service 2181:2181"
-Start-Process -FilePath "kubectl" -ArgumentList "port-forward svc/mongo-service 27017:27017"
-Start-Process -FilePath "kubectl" -ArgumentList "port-forward svc/prometheus-service 9090:9090"
-Start-Process -FilePath "kubectl" -ArgumentList "port-forward svc/grafana-service 3000:3000"
+uvicorn src.main:app
 ```
 
 ### 4. Stopping the Services
-When you're done, you can stop the services by deleting the deployment:
+When you're done, you can stop the services by shutting down the containers:
 ```bash
-kubectl delete deployment my-web-dep
+docker-compose down
 ```
-This will stop the pods in Kubernetes.
+This will stop the containers in docker.
 
